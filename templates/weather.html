@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agri Master | Weather Forecast</title>
+    
+    <!-- Load Tailwind CSS directly from CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Custom background grid */
+        .grid-bg {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .grid-item {
+            background-size: cover;
+            background-position: center;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Darker Overlay to make the central card readable */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        /* Styling for the main weather content card */
+        #weather-card {
+            z-index: 10;
+            min-height: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+        }
+
+        /* Search input container styling */
+        .search-container {
+            border: 1px solid #d1d5db;
+            transition: all 0.3s ease;
+        }
+        .search-container:focus-within {
+            border-color: #34D399; /* Tailwind green-400 */
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.5);
+        }
+
+        /* Specific icon styling */
+        .weather-icon {
+            width: 150px;
+            height: 150px;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #10B981; /* Tailwind green-500 */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen relative">
+    
+    <!-- Red Header Bar -->
+    <header class="bg-red-600 p-3 text-center text-white font-extrabold text-xl shadow-lg relative z-20">
+        WEATHER FORECAST
+    </header>
+
+    <!-- Background Grid (Using placeholders for visual structure) -->
+    <div class="grid-bg">
+        <div class="grid-item bg-gray-600" style="grid-column: 1 / 3; background-image: url('https://placehold.co/1200x600/38761D/ffffff?text=Farming+Landscape+1');"></div>
+        <div class="grid-item bg-gray-700" style="grid-column: 3 / 4; background-image: url('https://placehold.co/600x600/3CB371/ffffff?text=Farming+Landscape+2');"></div>
+        <div class="grid-item bg-gray-500" style="background-image: url('https://placehold.co/600x600/007000/ffffff?text=Weather+Data+Analytics');"></div>
+        <div class="grid-item bg-gray-600" style="grid-column: 2 / 4; background-image: url('https://placehold.co/1200x600/6AA84F/ffffff?text=Farming+Landscape+3');"></div>
+    </div>
+    <div class="overlay"></div>
+
+    <!-- Main Content Centered -->
+    <main class="flex-grow flex justify-center items-center py-10 relative z-10">
+        <div id="weather-card" class="w-11/12 sm:w-2/3 lg:w-1/3 p-6 rounded-2xl flex flex-col items-center">
+            
+            <!-- Search Bar -->
+            <div class="search-container flex w-full max-w-sm rounded-full bg-white p-2 mb-6">
+                <input id="city-input" type="text" placeholder="Enter Location..." value="Bengaluru"
+                       class="flex-grow px-4 py-2 text-lg rounded-full focus:outline-none placeholder-gray-500 text-gray-800">
+                <button id="search-button" onclick="fetchWeather()" 
+                        class="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full ml-2 focus:outline-none shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Weather Display Area -->
+            <div id="weather-display" class="w-full text-center">
+                <!-- Initial content or loading spinner goes here -->
+                <div class="flex justify-center items-center h-48">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="mt-8 text-xs text-gray-500">
+                &copy; Copyright - All Rights Reserved Team AgriSens
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // *** API Key Setup ***
+        // Your OpenWeatherMap API Key goes here.
+        // It must be placed in the quotes.
+        const API_KEY = "7061bfa9137eb05514d57f4a8678537b"; 
+        const API_BASE = "https://api.openweathermap.org/data/2.5/weather?units=metric"; 
+        
+        const weatherDisplay = document.getElementById('weather-display');
+        const cityInput = document.getElementById('city-input');
+        const searchButton = document.getElementById('search-button');
+
+        // Mapping OpenWeatherMap icon codes to simple visual representations (SVG/Emoji)
+        function getWeatherIcon(iconCode) {
+            const iconMap = {
+                '01d': '☀️', // clear sky day
+                '01n': '🌙', // clear sky night
+                '02d': '🌤️', // few clouds day
+                '02n': '☁️', // few clouds night
+                '03d': '☁️', // scattered clouds day
+                '03n': '☁️', // scattered clouds night
+                '04d': ' overcast', // broken clouds day
+                '04n': ' overcast', // broken clouds night
+                '09d': '🌧️', // shower rain day
+                '09n': '🌧️', // shower rain night
+                '10d': '🌦️', // rain day
+                '10n': '🌧️', // rain night
+                '11d': '⛈️', // thunderstorm day
+                '11n': '⛈️', // thunderstorm night
+                '13d': '❄️', // snow day
+                '13n': '❄️', // snow night
+                '50d': '🌫️', // mist day
+                '50n': '🌫️'  // mist night
+            };
+            // Fallback icon: large sun/cloud graphic
+            const fallbackIcon = `
+                <svg class="weather-icon mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="7" r="5" fill="#FFC107"/> 
+                    <path d="M12 10C9.79086 10 8 11.7909 8 14C8 16.2091 9.79086 18 12 18H16C18.2091 18 20 16.2091 20 14C20 11.7909 18.2091 10 16 10H12Z" fill="#3AB1C7"/>
+                    <path d="M14 10H12C9.79086 10 8 11.7909 8 14C8 16.2091 9.79086 18 12 18C14.2091 18 16 16.2091 16 14C16 11.7909 14.2091 10 12 10Z" fill="#3AB1C7"/>
+                    <path d="M12 2L12 4M20 7L18.6 8.4M4 7L5.4 8.4M22 14L20 14M2 14L4 14" stroke="#FFC107" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M16.5 4.5L15.1 5.9M7.5 4.5L8.9 5.9" stroke="#FFC107" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            `;
+
+            if (iconCode && iconCode.startsWith('04')) {
+                // Use the specific sun/cloud graphic for broken/overcast clouds
+                return fallbackIcon;
+            }
+            // Use emoji map for other conditions
+            const emoji = iconMap[iconCode] || fallbackIcon; 
+            return `<div class="weather-icon mx-auto text-9xl">${emoji}</div>`;
+        }
+
+        function renderWeather(data) {
+            if (data.cod !== 200) {
+                let errorMessage = `<p class="text-xl text-red-500 font-semibold mt-4">Location not found. Please try again.</p>`;
+                if (data.cod === 401) {
+                    errorMessage = `<p class="text-xl text-red-500 font-semibold mt-4">API Key Error (401): Your key might be invalid or not yet activated.</p>`;
+                }
+                weatherDisplay.innerHTML = errorMessage;
+                return;
+            }
+
+            const temp = Math.round(data.main.temp);
+            const description = data.weather[0].description.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            const humidity = data.main.humidity;
+            const windSpeed = (data.wind.speed * 3.6).toFixed(2); // Convert m/s to Km/H
+
+            weatherDisplay.innerHTML = `
+                <div class="text-xl font-semibold mb-4 text-gray-700">${data.name}</div>
+
+                ${getWeatherIcon(data.weather[0].icon)}
+                
+                <div class="text-7xl font-extrabold text-gray-800 mt-4">${temp}°C</div>
+                <div class="text-xl text-gray-600 font-medium mb-8">${description}</div>
+
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-2 gap-4 border-t pt-4 w-full">
+                    
+                    <!-- Humidity -->
+                    <div class="flex flex-col items-center border-r">
+                        <div class="text-4xl font-extrabold text-green-600">${humidity}%</div>
+                        <div class="text-sm text-gray-500 mt-1">Humidity</div>
+                    </div>
+                    
+                    <!-- Wind Speed -->
+                    <div class="flex flex-col items-center">
+                        <div class="text-4xl font-extrabold text-green-600">${windSpeed} Km/H</div>
+                        <div class="text-sm text-gray-500 mt-1">Wind Speed</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to fetch data from OpenWeatherMap
+        async function fetchWeather() {
+            const city = cityInput.value.trim();
+            if (city === "") {
+                weatherDisplay.innerHTML = `<p class="text-xl text-red-500 font-semibold mt-4">Please enter a city name.</p>`;
+                return;
+            }
+            
+            // Check if the key is still the placeholder value or empty
+            if (API_KEY === "" || API_KEY === "7061bfa9137eb05514d57f4a8678537b") {
+                // Note: The key is needed to prevent the API call from failing immediately. 
+                // We're relying on the user having correctly entered it above.
+                console.log("Using provided API key.");
+            }
+
+            // Show loading spinner
+            weatherDisplay.innerHTML = `
+                <div class="flex justify-center items-center h-48">
+                    <div class="spinner"></div>
+                </div>
+            `;
+
+            const url = `${API_BASE}&q=${encodeURIComponent(city)}&appid=${API_KEY}`;
+            
+            // Exponential backoff mechanism for API calls
+            const maxRetries = 3;
+            let attempt = 0;
+            
+            while (attempt < maxRetries) {
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    renderWeather(data);
+                    return; // Success, exit loop
+                } catch (error) {
+                    // Log to console but don't show the user, as we retry
+                    console.error("Fetch failed on attempt " + (attempt + 1) + ":", error);
+                    attempt++;
+                    if (attempt < maxRetries) {
+                        const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s...
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        weatherDisplay.innerHTML = `<p class="text-xl text-red-500 font-semibold mt-4">Failed to fetch weather data after multiple retries. The OpenWeatherMap API service may be unavailable.</p>`;
+                        return; // Failed after max retries
+                    }
+                }
+            }
+        }
+        
+        // Initial load for a default city (Bengaluru, as per screenshot)
+        document.addEventListener('DOMContentLoaded', () => {
+             // Fetch weather when the page loads
+             fetchWeather();
+             
+             // Allow search on Enter key press
+             cityInput.addEventListener('keypress', (e) => {
+                 if (e.key === 'Enter') {
+                     fetchWeather();
+                 }
+             });
+        });
+
+    </script>
+</body>
+</html>

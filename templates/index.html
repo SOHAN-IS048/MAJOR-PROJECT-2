@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agri Master|AI based Smart Farming System</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <h1>🌱 Agri Master</h1>
+    </div>
+    <nav class="navbar">
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#team">About</a>
+      <a href="#contact">Contact</a>
+      <a href="/explore" class="btn">Explore Now</a>
+
+
+    </nav>
+    
+  </header>
+  
+
+
+  <!-- Home Section -->
+  <section class="home" id="home">
+    <div class="content">
+      <h1>AI based Smart Farming System</h1>
+      <p>AI-powered insights for better crops, healthier soil, and smarter irrigation.</p>
+      <a href="/irrigation" class="home-btn">Start Smart Farming</a>
+    </div>
+    <img src="{{ url_for('static', filename='AI.jpg') }}" alt="A person stands in a lush green agricultural field using a tablet to monitor crop growth. The sky is bright and clear with distant trees lining the horizon, suggesting a modern and hopeful approach to smart farming. The overall atmosphere is innovative and optimistic.">
+    </div>
+
+  </section>
+  <script>
+  const menuBtn = document.getElementById('menu-btn');
+  const sidePanel = document.getElementById('side-panel');
+  const closeBtn = document.getElementById('close-btn');
+
+  menuBtn.addEventListener('click', () => {
+    sidePanel.classList.toggle('active');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    sidePanel.classList.remove('active');
+  });
+</script>
+
+
+  <!-- Features -->
+  <section class="features" id="features">
+  <div class="features-header">
+    <h1>Features</h1>
+    <p>
+      Agri Master provides farmers with essential tools for smarter farming. It
+      offers personalized crop recommendations based on soil and climate,
+      helps identify plant diseases through image analysis, and provides
+      real-time weather forecasts. The app also includes features for crop
+      planning and guidance, ensuring optimal farming decisions for better
+      yields and healthier crops.
+    </p>
+  </div>
+
+  <div class="features-buttons">
+    <a href="https://crop-recommendation-pnvpdv6mqyovsm3ekujefv.streamlit.app/#agri-master-smart-crop-recommendations" class="feature-btn active">Crop Recommendations</a>
+    <a href="https://sohan-is048-plant-disease-identification-main-pwmiqk.streamlit.app/" class="feature-btn">Identify Plant Diseases</a>
+    <a href="{{ url_for('weather') }}" class="feature-btn">Today's Weather Forecast</a>
+    <a href="https://fertilizer-recommendation-adgodwqefrba3sggnee4rs.streamlit.app/" class="feature-btn">Fertilizer Recommendation</a>
+    <a href="{{ url_for('smart_guidance') }}" class="feature-btn">Smart Farming Guidance</a>
+
+    
+  </div>
+
+  <div class="features-rows">
+    <!-- Feature Item 1 -->
+    <div class="feature-item">
+      <div class="feature-image">
+        <img src="{{ url_for('static', filename='weather.gif') }}" alt="Weather" />
+      </div>
+      <div class="feature-content">
+        <h2>Weather Forecast</h2>
+        <p>
+          Plan your farming with precision! Check real-time weather insights on temperature, humidity, and more. Integrated with our crop-prediction model for optimal decisions.
+        </p>
+        <a href="#" class="feature-link">More info</a>
+      </div>
+    </div>
+
+    <!-- Feature Item 2 -->
+    <div class="feature-item reverse">
+      <div class="fSeature-image">
+       <img src="{{ url_for('static', filename='crop.gif') }}" alt="Weather" />
+      </div>
+      <div class="feature-content">
+        <h2>Crop Recommendation</h2>
+        <p>
+          Get personalized crop suggestions based on soil, climate, and location for optimal yield. Make smarter planting decisions with AgroMaster insights
+        </p>
+        <a href="#" class="feature-link">More info</a>
+      </div>
+    </div>
+
+    <!-- Feature Item 3 -->
+    <div class="feature-item">
+      <div class="feature-image">
+        <img src="{{ url_for('static', filename='disease.gif') }}" alt="Plant Disease Identification">
+      </div>
+      <div class="feature-content">
+        <h2>Plant Disease Identification</h2>
+        <p>
+          Detect plant diseases quickly with image uploads for prompt and precise identification, enhancing efficiency and crop management.
+        </p>
+        <a href="#" class="feature-link">More info</a>
+      </div>
+    </div>
+
+    <!-- Feature Item 4 -->
+    <div class="feature-item reverse">
+      <div class="feature-image">
+      <img src="{{ url_for('static', filename='fertilizer.gif') }}" alt="Fertilizer.">
+      </div>
+      <div class="feature-content">
+        <h2>Fertilizer Recommendation</h2>
+        <p>
+          Get tailored fertilizer advice based on your soil and crop needs. Optimize growth and yield with our expert recommendations.
+        </p>
+        <a href="#" class="feature-link">More info</a>
+      </div>
+    </div>
+
+    <!-- Feature Item 5 -->
+    <div class="feature-item">
+      <div class="feature-image">
+        <img src="{{ url_for('static', filename='smart.gif') }}" alt="Fertilizer.">
+        </div>
+      <div class="feature-content">
+        <h2>Smart Farming Guidance</h2>
+        <p>
+          Access simple, step-by-step guidance for every stage of farming. AgroMaster empowers farmers with expert tips and real-time support for better results.
+        </p>
+        <a href="#" class="feature-link">More info</a>
+      </div>
+    </div>
+
+    <!-- Feature Item 6 -->
+    <div class="feature-item reverse">
+      <div class="feature-image">
+      <img src="{{ url_for('static', filename='user.gif') }}" alt="Fertilizer.">
+      </div>
+      <div class="feature-content">
+        <h2>User-Friendly Interface</h2>
+        <p>
+          Designed for farmers of all technological backgrounds, with simple inputs like location and crop selection for effortless access.
+        </p>
+        <a href="#" class="feature-link">More info</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <section class="about" id="team">
+  <h2 class="heading">Our Team</h2>
+  <p class="team-intro">
+    Meet the minds behind <strong>Agri Master</strong> — Innovating sustainable agriculture.
+  </p>
+
+  <div class="box-container">
+    <!-- Member 1 -->
+    <div class="box">
+      <img src="{{ url_for('static', filename='sohan.jpg') }}" alt="Sohan V" />
+      <h3>Sohan V</h3>
+      <p>Final Year | Information Science | VTU</p>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/sohan-v-4b3b05338?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin"></i></a>
+        <a href="https://share.google/w78AUEIECZk99SH6U"><i class="fab fa-github"></i></a>
+      </div>
+    </div>
+
+    <!-- Member 2 -->
+    <div class="box">
+      <img src="{{ url_for('static', filename='Akshay.jpg') }}" alt="Member 2" />
+      <h3>Akshay V</h3>
+      <p>Final Year | Information Science | VTU</p>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/akshay-v-108b04260?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin"></i></a>
+        <a href="https://github.com/Akshayvirat18"><i class="fab fa-github"></i></a>
+      </div>
+    </div>
+
+    <!-- Member 3 -->
+    <div class="box">
+      <img src="{{ url_for('static', filename='Gowtham.jpg') }}" alt="Member 3" />
+      <h3>Gowtham NM</h3>
+      <p>Final Year | Information Science | VTU</p>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/gowtham-n-m-36a96630a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin"></i></a>
+        <a href="https://github.com/Gowthamnmgowthunm"><i class="fab fa-github"></i></a>
+      </div>
+    </div>
+
+    <!-- Member 4 -->
+    <div class="box">
+      <img src="{{ url_for('static', filename='Keshav.jpg') }}" alt="Member 4" />
+      <h3>Keshavamurthy G</h3>
+      <p> Final Year | Information Science| NxtWave Intern/VTU</p>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/keshavamurthy-g-a96954351/"><i class="fab fa-linkedin"></i></a>
+        <a href="https://github.com/keshava2004"><i class="fab fa-github"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- Footer -->
+<footer class="posh-footer" id="contact">
+    <div class="footer-container">
+        <div class="footer-box">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="#home"><i class="fas fa-chevron-right"></i> Home</a></li>
+                <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                <li><a href="#team"><i class="fas fa-chevron-right"></i> About</a></li>
+                <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-box">
+    <h4>Resources</h4>
+    <ul>
+        <li><a href="/explore#contact" class="py-24 bg-white"><i class="fas fa-chevron-right"></i> Support</a></li>
+        <li>
+            <a href="/explore#faq" class="hover:text-lime-500 transition duration-200">
+                <i class="fas fa-chevron-right"></i> FAQ
+            </a>
+        </li>
+    </ul>
+</div>
+
+        <div class="footer-box brand-info">
+            <h4>🌱 Agri Master</h4>
+            <p>AI-powered insights for better crops, healthier soil, and smarter irrigation.</p>
+            <div class="footer-socials">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2025 SmartAgroAI | All Rights Reserved</p>
+    </div>
+</footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

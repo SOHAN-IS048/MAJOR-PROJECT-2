@@ -1,0 +1,6 @@
+setuptools
+wheel
+Flask==3.0.0
+numpy==1.25.2
+requests==2.31.0
+gunicorn
