@@ -10,14 +10,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 70px;
+  padding: 10px 40px;
   position: sticky;
   top: 0;
   z-index: 1000;
   background: linear-gradient(135deg, rgba(46, 139, 87, 0.9), rgba(72, 209, 204, 0.85));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(200, 200, 200, 0.2);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   color: #fff;
   transition: all 0.3s ease-in-out;
