@@ -479,5 +479,19 @@
             });
         });
     </script>
+     <script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en', // Your original page language
+    // Use the minimal inline layout
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE, 
+    // Add an explicit list of languages to show in the dropdown. 
+    // This makes the dropdown the primary interface, often preventing the banner.
+    includedLanguages: 'en,hi,kn,te,ta,ma', // Example list: English, Hindi, Spanish, French, German, Russian, Portuguese
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
