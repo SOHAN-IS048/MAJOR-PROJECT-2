@@ -295,24 +295,25 @@ function googleTranslateElementInit() {
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <!-- Vapi Web widget (corrected) -->
 <script>
+  var vapiInstance = null;
+  const assistant = "<fff671f9-d81f-427c-98b3-9852d32d4da3>"; // Substitute with your assistant ID
+  const apiKey = "<9d4de764-77bd-46ea-9593-4f143cb810e0>"; // Substitute with your Public key from Vapi Dashboard.
+  const buttonConfig = {}; // Modify this as required
+
   (function (d, t) {
     var g = document.createElement(t),
-        s = d.getElementsByTagName(t)[0];
-    g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+      s = d.getElementsByTagName(t)[0];
+    g.src =
+      "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
     g.defer = true;
     g.async = true;
     s.parentNode.insertBefore(g, s);
 
     g.onload = function () {
-      // IMPORTANT: no angle brackets around key/id
       vapiInstance = window.vapiSDK.run({
-        apiKey: "9d4de764-77bd-46ea-9593-4f143cb810e0", // your PUBLIC key
-        assistant: "fff671f9-d81f-427c-98b3-9852d32d4da3", // your assistant id
-        config: {
-          // optional configuration (button text, voice, colors, allowed languages)
-          defaultVoice: "Elliot",
-          // optional: other options per Vapi docs
-        }
+        apiKey: "9d4de764-77bd-46ea-9593-4f143cb810e0", // mandatory
+        assistant:"fff671f9-d81f-427c-98b3-9852d32d4da3", // mandatory
+        config: buttonConfig, // optional
       });
     };
   })(document, "script");
