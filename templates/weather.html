@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agri Master | Weather Forecast</title>
     
-    <!-- Load Tailwind CSS directly from CDN for styling -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Inter Font -->
@@ -20,7 +20,6 @@
             display: flex;
             flex-direction: column;
         }
-        /* Custom background grid */
         .grid-bg {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -38,8 +37,6 @@
             opacity: 0.8;
             transition: opacity 0.3s ease;
         }
-
-        /* Darker Overlay to make the central card readable */
         .overlay {
             position: absolute;
             top: 0;
@@ -49,36 +46,28 @@
             background-color: rgba(0, 0, 0, 0.4);
             z-index: 1;
         }
-
-        /* Styling for the main weather content card */
         #weather-card {
             z-index: 10;
             min-height: 450px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            background-color: rgba(255, 255, 255, 0.9);
         }
-
-        /* Search input container styling */
         .search-container {
             border: 1px solid #d1d5db;
             transition: all 0.3s ease;
         }
         .search-container:focus-within {
-            border-color: #34D399; /* Tailwind green-400 */
+            border-color: #34D399;
             box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.5);
         }
-
-        /* Specific icon styling */
         .weather-icon {
             width: 150px;
             height: 150px;
         }
-
-        /* Loading Spinner */
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #10B981; /* Tailwind green-500 */
+            border-left-color: #10B981;
             border-radius: 50%;
             width: 30px;
             height: 30px;
@@ -91,12 +80,14 @@
 </head>
 <body class="bg-gray-100 min-h-screen relative">
     
-    <!-- Red Header Bar -->
-    <header class="bg-red-600 p-3 text-center text-white font-extrabold text-xl shadow-lg relative z-20">
-        WEATHER FORECAST
+    <!-- Header with Google Translate -->
+    <header class="bg-red-600 px-4 py-3 text-white font-extrabold text-xl shadow-lg relative z-20 flex items-center justify-between">
+        <div>WEATHER FORECAST</div>
+        <!-- Google Translate dropdown will appear here -->
+        <div id="google_translate_element" class="text-sm"></div>
     </header>
 
-    <!-- Background Grid (Using placeholders for visual structure) -->
+    <!-- Background Grid -->
     <div class="grid-bg">
         <div class="grid-item bg-gray-600" style="grid-column: 1 / 3; background-image: url('https://placehold.co/1200x600/38761D/ffffff?text=Farming+Landscape+1');"></div>
         <div class="grid-item bg-gray-700" style="grid-column: 3 / 4; background-image: url('https://placehold.co/600x600/3CB371/ffffff?text=Farming+Landscape+2');"></div>
@@ -105,7 +96,7 @@
     </div>
     <div class="overlay"></div>
 
-    <!-- Main Content Centered -->
+    <!-- Main Content -->
     <main class="flex-grow flex justify-center items-center py-10 relative z-10">
         <div id="weather-card" class="w-11/12 sm:w-2/3 lg:w-1/3 p-6 rounded-2xl flex flex-col items-center">
             
@@ -123,7 +114,6 @@
 
             <!-- Weather Display Area -->
             <div id="weather-display" class="w-full text-center">
-                <!-- Initial content or loading spinner goes here -->
                 <div class="flex justify-center items-center h-48">
                     <div class="spinner"></div>
                 </div>
@@ -137,9 +127,6 @@
     </main>
 
     <script>
-        // *** API Key Setup ***
-        // Your OpenWeatherMap API Key goes here.
-        // It must be placed in the quotes.
         const API_KEY = "7061bfa9137eb05514d57f4a8678537b"; 
         const API_BASE = "https://api.openweathermap.org/data/2.5/weather?units=metric"; 
         
@@ -147,29 +134,12 @@
         const cityInput = document.getElementById('city-input');
         const searchButton = document.getElementById('search-button');
 
-        // Mapping OpenWeatherMap icon codes to simple visual representations (SVG/Emoji)
         function getWeatherIcon(iconCode) {
             const iconMap = {
-                '01d': '☀️', // clear sky day
-                '01n': '🌙', // clear sky night
-                '02d': '🌤️', // few clouds day
-                '02n': '☁️', // few clouds night
-                '03d': '☁️', // scattered clouds day
-                '03n': '☁️', // scattered clouds night
-                '04d': ' overcast', // broken clouds day
-                '04n': ' overcast', // broken clouds night
-                '09d': '🌧️', // shower rain day
-                '09n': '🌧️', // shower rain night
-                '10d': '🌦️', // rain day
-                '10n': '🌧️', // rain night
-                '11d': '⛈️', // thunderstorm day
-                '11n': '⛈️', // thunderstorm night
-                '13d': '❄️', // snow day
-                '13n': '❄️', // snow night
-                '50d': '🌫️', // mist day
-                '50n': '🌫️'  // mist night
+                '01d': '☀️','01n': '🌙','02d': '🌤️','02n': '☁️','03d': '☁️','03n': '☁️',
+                '04d': ' overcast','04n': ' overcast','09d': '🌧️','09n': '🌧️','10d': '🌦️',
+                '10n': '🌧️','11d': '⛈️','11n': '⛈️','13d': '❄️','13n': '❄️','50d': '🌫️','50n': '🌫️'
             };
-            // Fallback icon: large sun/cloud graphic
             const fallbackIcon = `
                 <svg class="weather-icon mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="12" cy="7" r="5" fill="#FFC107"/> 
@@ -179,12 +149,9 @@
                     <path d="M16.5 4.5L15.1 5.9M7.5 4.5L8.9 5.9" stroke="#FFC107" stroke-width="2" stroke-linecap="round"/>
                 </svg>
             `;
-
             if (iconCode && iconCode.startsWith('04')) {
-                // Use the specific sun/cloud graphic for broken/overcast clouds
                 return fallbackIcon;
             }
-            // Use emoji map for other conditions
             const emoji = iconMap[iconCode] || fallbackIcon; 
             return `<div class="weather-icon mx-auto text-9xl">${emoji}</div>`;
         }
@@ -202,7 +169,7 @@
             const temp = Math.round(data.main.temp);
             const description = data.weather[0].description.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
             const humidity = data.main.humidity;
-            const windSpeed = (data.wind.speed * 3.6).toFixed(2); // Convert m/s to Km/H
+            const windSpeed = (data.wind.speed * 3.6).toFixed(2);
 
             weatherDisplay.innerHTML = `
                 <div class="text-xl font-semibold mb-4 text-gray-700">${data.name}</div>
@@ -212,16 +179,11 @@
                 <div class="text-7xl font-extrabold text-gray-800 mt-4">${temp}°C</div>
                 <div class="text-xl text-gray-600 font-medium mb-8">${description}</div>
 
-                <!-- Metrics Grid -->
                 <div class="grid grid-cols-2 gap-4 border-t pt-4 w-full">
-                    
-                    <!-- Humidity -->
                     <div class="flex flex-col items-center border-r">
                         <div class="text-4xl font-extrabold text-green-600">${humidity}%</div>
                         <div class="text-sm text-gray-500 mt-1">Humidity</div>
                     </div>
-                    
-                    <!-- Wind Speed -->
                     <div class="flex flex-col items-center">
                         <div class="text-4xl font-extrabold text-green-600">${windSpeed} Km/H</div>
                         <div class="text-sm text-gray-500 mt-1">Wind Speed</div>
@@ -230,22 +192,13 @@
             `;
         }
 
-        // Function to fetch data from OpenWeatherMap
         async function fetchWeather() {
             const city = cityInput.value.trim();
             if (city === "") {
                 weatherDisplay.innerHTML = `<p class="text-xl text-red-500 font-semibold mt-4">Please enter a city name.</p>`;
                 return;
             }
-            
-            // Check if the key is still the placeholder value or empty
-            if (API_KEY === "" || API_KEY === "7061bfa9137eb05514d57f4a8678537b") {
-                // Note: The key is needed to prevent the API call from failing immediately. 
-                // We're relying on the user having correctly entered it above.
-                console.log("Using provided API key.");
-            }
 
-            // Show loading spinner
             weatherDisplay.innerHTML = `
                 <div class="flex justify-center items-center h-48">
                     <div class="spinner"></div>
@@ -254,7 +207,6 @@
 
             const url = `${API_BASE}&q=${encodeURIComponent(city)}&appid=${API_KEY}`;
             
-            // Exponential backoff mechanism for API calls
             const maxRetries = 3;
             let attempt = 0;
             
@@ -263,49 +215,43 @@
                     const response = await fetch(url);
                     const data = await response.json();
                     renderWeather(data);
-                    return; // Success, exit loop
+                    return;
                 } catch (error) {
-                    // Log to console but don't show the user, as we retry
                     console.error("Fetch failed on attempt " + (attempt + 1) + ":", error);
                     attempt++;
                     if (attempt < maxRetries) {
-                        const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s...
+                        const delay = Math.pow(2, attempt) * 1000;
                         await new Promise(resolve => setTimeout(resolve, delay));
                     } else {
                         weatherDisplay.innerHTML = `<p class="text-xl text-red-500 font-semibold mt-4">Failed to fetch weather data after multiple retries. The OpenWeatherMap API service may be unavailable.</p>`;
-                        return; // Failed after max retries
+                        return;
                     }
                 }
             }
         }
         
-        // Initial load for a default city (Bengaluru, as per screenshot)
         document.addEventListener('DOMContentLoaded', () => {
-             // Fetch weather when the page loads
              fetchWeather();
-             
-             // Allow search on Enter key press
              cityInput.addEventListener('keypress', (e) => {
                  if (e.key === 'Enter') {
                      fetchWeather();
                  }
              });
         });
-
     </script>
-     <script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'en', // Your original page language
-    // Use the minimal inline layout
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE, 
-    // Add an explicit list of languages to show in the dropdown. 
-    // This makes the dropdown the primary interface, often preventing the banner.
-    includedLanguages: 'en,hi,kn,te,ta,ma', // Example list: English, Hindi, Spanish, French, German, Russian, Portuguese
-    autoDisplay: false
-  }, 'google_translate_element');
-}
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- Google Translate widget JS -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,hi,kn,ta,te',  // English, Hindi, Kannada, Tamil, Telugu
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
