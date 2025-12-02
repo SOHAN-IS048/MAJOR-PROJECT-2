@@ -285,8 +285,8 @@ function googleTranslateElementInit() {
 <!-- Vapi Web widget (corrected) -->
 <script>
   var vapiInstance = null;
-  const assistant = "aa8e356f-743b-421b-89fa-2197e24cbf27";
-  const apiKey = "915917ed-e4da-4f6b-a1ae-53cfb271775d";
+  const assistant = "<aa8e356f-743b-421b-89fa-2197e24cbf27>"; // Substitute with your assistant ID
+  const apiKey = "<915917ed-e4da-4f6b-a1ae-53cfb271775d>"; // Substitute with your Public key from Vapi Dashboard.
   const buttonConfig = {}; // Modify this as required
 
   (function (d, t) {
@@ -300,8 +300,8 @@ function googleTranslateElementInit() {
 
     g.onload = function () {
       vapiInstance = window.vapiSDK.run({
-        apiKey: apiKey,
-        assistant: assistant,
+        apiKey: 915917ed-e4da-4f6b-a1ae-53cfb271775d, // mandatory
+        assistant: aa8e356f-743b-421b-89fa-2197e24cbf27, // mandatory
         config: buttonConfig, // optional
       });
     };
