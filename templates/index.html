@@ -283,11 +283,21 @@ function googleTranslateElementInit() {
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <!-- Vapi Web widget (corrected) -->
+<style>
+  .vapi-container {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 99999 !important;
+  }
+</style>
+
 <script>
   var vapiInstance = null;
   const assistant = "dcfd0bfa-0c1b-4f46-b574-289fcf0e8b5a";
   const apiKey = "5a50c1c4-0a8a-4f7d-8e39-ae8dd7926106";
-  const buttonConfig = {}; // Modify this as required
+  const buttonConfig = {}; // Modify if needed
 
   (function (d, t) {
     var g = document.createElement(t),
@@ -300,12 +310,13 @@ function googleTranslateElementInit() {
 
     g.onload = function () {
       vapiInstance = window.vapiSDK.run({
-        apiKey: "5a50c1c4-0a8a-4f7d-8e39-ae8dd7926106",
-        assistant: "dcfd0bfa-0c1b-4f46-b574-289fcf0e8b5a",
-        config: buttonConfig, // optional
+        apiKey,
+        assistant,
+        config: buttonConfig,
       });
     };
   })(document, "script");
 </script>
+
 </body>
 </html>
