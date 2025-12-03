@@ -283,30 +283,56 @@ function googleTranslateElementInit() {
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <!-- Vapi Web widget (corrected) -->
+<!-- Vapi Web widget (fixed) -->
 <script>
-  var vapiInstance = null;
-  const assistant = "dcfd0bfa-0c1b-4f46-b574-289fcf0e8b5a"; // Substitute with your assistant ID
-  const apiKey = "5a50c1c4-0a8a-4f7d-8e39-ae8dd7926106"; // Substitute with your Public key from Vapi Dashboard.
-  const buttonConfig = {}; // Modify this as required
+  // Protect other scripts from failing if elements are missing
+  const menuBtn = document.getElementById('menu-btn');
+  const sidePanel = document.getElementById('side-panel');
+  const closeBtn = document.getElementById('close-btn');
 
+  if (menuBtn && sidePanel && closeBtn) {
+    menuBtn.addEventListener('click', () => sidePanel.classList.toggle('active'));
+    closeBtn.addEventListener('click', () => sidePanel.classList.remove('active'));
+  }
+
+  // Vapi widget init
   (function (d, t) {
     var g = document.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    g.src =
-      "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        s = d.getElementsByTagName(t)[0];
+    g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
     g.defer = true;
     g.async = true;
     s.parentNode.insertBefore(g, s);
 
     g.onload = function () {
-      vapiInstance = window.vapiSDK.run({
-        apiKey: 5a50c1c4-0a8a-4f7d-8e39-ae8dd7926106, // mandatory
-        assistant: dcfd0bfa-0c1b-4f46-b574-289fcf0e8b5a, // mandatory
-        config: buttonConfig, // optional
-      });
+      if (!window.vapiSDK) {
+        console.error("vapiSDK not available after loading the script.");
+        return;
+      }
+
+      try {
+        vapiInstance = window.vapiSDK.run({
+          apiKey: "5a50c1c4-0a8a-4f7d-8e39-ae8dd7926106",        // <-- MUST be a string
+          assistant: "dcfd0bfa-0c1b-4f46-b574-289fcf0e8b5a",    // <-- MUST be a string
+          config: {
+            // common options — adapt based on provider docs
+            button: true,
+            showLogo: true,     // try enabling logo (if supported)
+            position: "bottom-right"
+          }
+        });
+        console.log("Vapi widget initialized", vapiInstance);
+      } catch (err) {
+        console.error("Error initializing Vapi widget:", err);
+      }
+    };
+
+    g.onerror = function (ev) {
+      console.error("Failed to load Vapi widget script", ev);
     };
   })(document, "script");
 </script>
+
 
 
 </body>
