@@ -283,41 +283,29 @@ function googleTranslateElementInit() {
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <!-- Vapi Web widget (corrected) -->
-<!-- Vapi Web widget (fixed) -->
-<!-- ===== Vapi: load provider script statically (so it's visible in Network tab) ===== -->
-<script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js" defer></script>
-
 <script>
-  // Wait until the provider script has loaded and the page has parsed
-  window.addEventListener('load', function() {
-    try {
-      if (!window.vapiSDK) {
-        console.warn("Vapi provider script loaded but window.vapiSDK is not available.");
-        // Still inject fallback badge (below) — return to stop init attempt
-        return;
-      }
+  var vapiInstance = null;
+  const assistant = "dcfd0bfa-0c1b-4f46-b574-289fcf0e8b5a";
+  const apiKey = "5a50c1c4-0a8a-4f7d-8e39-ae8dd7926106";
+  const buttonConfig = {}; // Modify this as required
 
-      // Initialize the widget (replace apiKey/assistant with your actual values if different)
-      window.vapiInstance = window.vapiSDK.run({
+  (function (d, t) {
+    var g = document.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    g.src =
+      "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+    g.defer = true;
+    g.async = true;
+    s.parentNode.insertBefore(g, s);
+
+    g.onload = function () {
+      vapiInstance = window.vapiSDK.run({
         apiKey: "5a50c1c4-0a8a-4f7d-8e39-ae8dd7926106",
         assistant: "dcfd0bfa-0c1b-4f46-b574-289fcf0e8b5a",
-        config: { button: true, position: "bottom-right" }
+        config: buttonConfig, // optional
       });
-
-      console.log("Vapi widget initialized:", !!window.vapiInstance);
-
-      // If the SDK exposes an update API, attempt to enable branding
-      try {
-        if (window.vapiInstance && typeof window.vapiInstance.update === 'function') {
-          window.vapiInstance.update({ branding: { showLogo: true, showBadge: true }});
-          console.log('Requested branding via vapiInstance.update()');
-        }
-      } catch (err) { console.warn('branding update attempt failed:', err); }
-
-    } catch (err) {
-      console.error("Error while initializing Vapi widget:", err);
-    }
-  });
+    };
+  })(document, "script");
 </script>
 
 
