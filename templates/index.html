@@ -284,18 +284,26 @@ function googleTranslateElementInit() {
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <!-- Vapi Web widget (corrected) -->
 <!-- Vapi Web widget (fixed) -->
+<!-- ===== Vapi widget + guaranteed logo badge (paste in place of old Vapi block) ===== -->
 <script>
-  // Protect other scripts from failing if elements are missing
-  const menuBtn = document.getElementById('menu-btn');
-  const sidePanel = document.getElementById('side-panel');
-  const closeBtn = document.getElementById('close-btn');
+  // safe event-listener guards (if you kept these earlier)
+  (function protectMenuBindings() {
+    try {
+      const menuBtn = document.getElementById('menu-btn');
+      const sidePanel = document.getElementById('side-panel');
+      const closeBtn = document.getElementById('close-btn');
+      if (menuBtn && sidePanel && closeBtn) {
+        menuBtn.addEventListener('click', () => sidePanel.classList.toggle('active'));
+        closeBtn.addEventListener('click', () => sidePanel.classList.remove('active'));
+      }
+    } catch (e) {
+      console.warn('Menu binding safe-guard failed (nonfatal)', e);
+    }
+  })();
+</script>
 
-  if (menuBtn && sidePanel && closeBtn) {
-    menuBtn.addEventListener('click', () => sidePanel.classList.toggle('active'));
-    closeBtn.addEventListener('click', () => sidePanel.classList.remove('active'));
-  }
-
-  // Vapi widget init
+<script>
+  // Load the Vapi script dynamically and initialize
   (function (d, t) {
     var g = document.createElement(t),
         s = d.getElementsByTagName(t)[0];
@@ -305,23 +313,35 @@ function googleTranslateElementInit() {
     s.parentNode.insertBefore(g, s);
 
     g.onload = function () {
-      if (!window.vapiSDK) {
-        console.error("vapiSDK not available after loading the script.");
-        return;
-      }
-
       try {
-        vapiInstance = window.vapiSDK.run({
-          apiKey: "5a50c1c4-0a8a-4f7d-8e39-ae8dd7926106",        // <-- MUST be a string
-          assistant: "dcfd0bfa-0c1b-4f46-b574-289fcf0e8b5a",    // <-- MUST be a string
+        if (!window.vapiSDK) {
+          console.error("vapiSDK not available after loading the script.");
+          return;
+        }
+
+        // Initialize the widget (use your real apiKey/assistant strings)
+        window.vapiInstance = window.vapiSDK.run({
+          apiKey: "5a50c1c4-0a8a-4f7d-8e39-ae8dd7926106",        // keep as quoted string
+          assistant: "dcfd0bfa-0c1b-4f46-b574-289fcf0e8b5a",    // keep as quoted string
           config: {
-            // common options — adapt based on provider docs
             button: true,
-            showLogo: true,     // try enabling logo (if supported)
             position: "bottom-right"
+            // provider-specific keys might exist; we attempt update below if required
           }
         });
-        console.log("Vapi widget initialized", vapiInstance);
+
+        console.log("Vapi widget initialized", window.vapiInstance);
+
+        // If the SDK exposes an update/config API, attempt to enable branding
+        try {
+          if (window.vapiInstance && typeof window.vapiInstance.update === 'function') {
+            window.vapiInstance.update({ branding: { showLogo: true, showBadge: true }});
+            console.log('Attempted to enable branding via vapiInstance.update()');
+          }
+        } catch (err) {
+          console.warn('vapiInstance.update attempt failed (nonfatal):', err);
+        }
+
       } catch (err) {
         console.error("Error initializing Vapi widget:", err);
       }
@@ -332,6 +352,88 @@ function googleTranslateElementInit() {
     };
   })(document, "script");
 </script>
+
+<!-- ===== Poll & unhide injected elements (force visible if widget CSS hides them) ===== -->
+<script>
+(function ensureVapiLogoVisible() {
+  const selectors = [
+    '[id^="vapi"]', '[class*="vapi"]', '.vapi-widget', '.vapi-logo',
+    '.vapi-button', '.vapi-bubble', '.vapi-root', '[class*="assistant"]'
+  ];
+
+  const maxAttempts = 40;
+  let attempts = 0;
+  const makeVisible = (el) => {
+    if (!el) return;
+    el.style.setProperty('display', 'block', 'important');
+    el.style.setProperty('visibility', 'visible', 'important');
+    el.style.setProperty('opacity', '1', 'important');
+    el.style.setProperty('z-index', '999999', 'important');
+    el.style.setProperty('pointer-events', 'auto', 'important');
+  };
+
+  const poll = setInterval(() => {
+    attempts++;
+    let found = false;
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        const looksLikeLogo = el.querySelector('img, svg, .logo, .icon');
+        makeVisible(el);
+        if (looksLikeLogo || /logo|brand|icon|vapi/i.test((el.className || el.id || ''))) {
+          makeVisible(el);
+          found = true;
+          console.log('ensureVapiLogoVisible: revealed', el);
+        }
+      });
+    });
+
+    if (found || attempts >= maxAttempts) {
+      clearInterval(poll);
+      if (!found) console.log('ensureVapiLogoVisible: no candidate logo found after polling.');
+    }
+  }, 500);
+})();
+</script>
+
+<!-- ===== Fallback badge (always visible) - inline SVG logo so no extra file needed ===== -->
+<style>
+  #vampi-badge {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    z-index: 1000000 !important;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#ffffff;
+    cursor:pointer;
+    transition: transform .12s ease;
+  }
+  #vampi-badge:hover { transform: translateY(-3px); }
+  #vampi-badge img, #vampi-badge svg { width:36px; height:36px; display:block; }
+</style>
+
+<a id="vampi-badge" href="https://vampi.ai" target="_blank" rel="noopener noreferrer" aria-label="Vampi.ai - Open assistant">
+  <!-- Inline simple leaf + chat bubble SVG as logo (replace if you have official logo) -->
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="false">
+    <rect x="0" y="0" width="64" height="64" rx="10" fill="#ffffff"></rect>
+    <g transform="translate(6,6) scale(0.9)">
+      <path d="M24 2c-6 0-11 4-13 9 2 0 4-1 6-1 6 0 11 5 11 11 0 2 0 4-1 6 5-2 9-7 9-13C36 7 30 2 24 2z" fill="#6cc24a"/>
+      <path d="M12 38c0-6 6-11 14-11s14 5 14 11c0 2-1 4-2 5l-4 6-6-3c-2 1-4 1-6 1-6 0-10-4-10-9z" fill="#2d874a"/>
+      <circle cx="16" cy="16" r="1.5" fill="#fff" opacity="0.9"/>
+    </g>
+  </svg>
+</a>
+
+<!-- ===== Quick dev helper: log likely widget container nodes (optional) =====
+<script>setTimeout(()=>console.log('possible vapi nodes:', document.querySelectorAll('[id*=\"vapi\"],[class*=\"vapi\"],[class*=\"assistant\"],[class*=\"vapi-widget\"]')),2000)</script>
+-->
+<!-- ===== end block ===== -->
+
 
 
 
