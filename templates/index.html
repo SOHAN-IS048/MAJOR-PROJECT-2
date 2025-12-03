@@ -307,6 +307,31 @@ function googleTranslateElementInit() {
     };
   })(document, "script");
 </script>
+  <style>
+  /* Force center positioning for Vapi widget */
+  .vapi-center {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 999999 !important;
+  }
+</style>
+
+<script>
+  // Wait until Vapi widget loads and then center it
+  const moveVapiToCenter = setInterval(() => {
+    // Vapi widgets usually inject elements containing "vapi" in class or id
+    const el = document.querySelector('[class*="vapi"], [id*="vapi"]');
+
+    if (el) {
+      el.classList.add("vapi-center");
+      console.log("Centered Vapi widget");
+      clearInterval(moveVapiToCenter);
+    }
+  }, 400);
+</script>
+
 
 
 </body>
